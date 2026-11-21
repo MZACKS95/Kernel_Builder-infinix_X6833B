@@ -1,4 +1,4 @@
-name: Build MT7601u-patched_final
+name: Build MT7601u-patched-final
 
 on:
   workflow_dispatch:
@@ -220,18 +220,18 @@ jobs:
           export PATH="$GITHUB_WORKSPACE/clang-aosp/bin:$PATH"
           export CC="ccache clang"
           mkdir -p "$GITHUB_WORKSPACE/artifacts"
-          echo "===== BUILD cfg80211 - PATCHED ====="
+          echo "===== BUILD CFG80211 - PATCHED ====="
           make -j2 O=out ARCH=arm64 LLVM=1 LLVM_IAS=1 \
             CLANG_TRIPLE=aarch64-linux-gnu- \
             CROSS_COMPILE=aarch64-linux-gnu- \
             KBUILD_MODPOST_WARN=1 \
-            M=net/wireless modules
-          echo "===== BUILD mac80211 - PATCHED ====="
+            net/wireless/
+          echo "===== BUILD MAC80211 - PATCHED ====="
           make -j2 O=out ARCH=arm64 LLVM=1 LLVM_IAS=1 \
             CLANG_TRIPLE=aarch64-linux-gnu- \
             CROSS_COMPILE=aarch64-linux-gnu- \
             KBUILD_MODPOST_WARN=1 \
-            M=net/mac80211 modules
+            net/mac80211/
           echo "===== CARI HASILNYA ====="
           ls -lh out/net/wireless/cfg80211.ko
           ls -lh out/net/mac80211/mac80211.ko
