@@ -133,7 +133,7 @@ jobs:
         uses: actions/cache@v4
         with:
           path: clang-aosp
-          key: aosp-clang-r416183b-android12
+          key: aosp-clang-r416183b-android12-v2
 
       - name: Download AOSP Clang
         if: steps.clang-cache.outputs.cache-hit != 'true'
@@ -153,11 +153,21 @@ jobs:
 
       - name: Setup Clang
         run: |
-          echo "$GITHUB_WORKSPACE/clang-aosp/bin" >> "$GITHUB_PATH"
-          chmod +x "$GITHUB_WORKSPACE/clang-aosp/bin/"*
+          set -e
+          CLANG_DIR="$GITHUB_WORKSPACE/clang-aosp"
 
-          clang --version
-          ld.lld --version
+          echo "===== CLANG DIRECTORY ====="
+          ls -lah "$CLANG_DIR"
+          ls -lah "$CLANG_DIR/bin"
+
+          echo "$CLANG_DIR/bin" >> "$GITHUB_PATH"
+          chmod +x "$CLANG_DIR/bin/"*
+
+          test -x "$CLANG_DIR/bin/clang"
+          test -x "$CLANG_DIR/bin/ld.lld"
+
+          "$CLANG_DIR/bin/clang" --version
+          "$CLANG_DIR/bin/ld.lld" --version
 
       - name: Setup ccache
         run: |
