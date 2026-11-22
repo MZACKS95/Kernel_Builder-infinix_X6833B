@@ -232,10 +232,14 @@ jobs:
           export KBUILD_BUILD_USER=builder
           export KBUILD_BUILD_HOST=github-actions
 
-          make -j"$(nproc)" O=out \
+          JOBS=2
+
+          echo "===== BUILD PARALLEL JOBS: $JOBS ====="
+
+          make -j"$JOBS" O=out \
             Image modules \
             KBUILD_MODPOST_WARN=1
-
+          
           mkdir -p "$GITHUB_WORKSPACE/artifacts"
 
           find out -type f -name 'cfg80211.ko' \
