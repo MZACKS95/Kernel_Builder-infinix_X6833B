@@ -127,28 +127,29 @@ jobs:
           fi
 
 
+      
       - name: Cache AOSP Clang
         id: clang-cache
         uses: actions/cache@v4
         with:
           path: clang-aosp
-          key: aosp-clang-r416183b-linux-x86_64-v1
+          key: aosp-clang-r416183b-android12
 
-      - name: Download AOSP Clang r416183b
+      - name: Download AOSP Clang
         if: steps.clang-cache.outputs.cache-hit != 'true'
         run: |
           set -e
-          git clone --depth 1 \
-            https://android.googlesource.com/platform/prebuilts/clang/host/linux-x86 \
-            /tmp/clang-repo
+          echo "===== DOWNLOAD AOSP CLANG ====="
 
-          cd /tmp/clang-repo
-          git fetch --depth 1 origin refs/tags/android12-release
-          git checkout FETCH_HEAD
+          mkdir -p clang-aosp
 
-          mkdir -p "$GITHUB_WORKSPACE/clang-aosp"
-          cp -a clang-r416183b/. \
-            "$GITHUB_WORKSPACE/clang-aosp/"
+          curl -L --fail --retry 3 \
+            -o clang.tar.gz \
+            "https://android.googlesource.com/platform/prebuilts/clang/host/linux-x86/+archive/refs/heads/android12-release/clang-r416183b.tar.gz"
+
+          tar -xzf clang.tar.gz -C clang-aosp
+          rm clang.tar.gz
+
 
       - name: Setup Clang
         run: |
