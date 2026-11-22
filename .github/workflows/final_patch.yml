@@ -29,20 +29,27 @@ jobs:
           path: android/kernel/common/7c6bbcca33e1
           key: kernel-common-7c6bbcca33e1-v1
 
+      
       - name: Clone Google Common Kernel
         run: |
           set -e
           mkdir -p "$GITHUB_WORKSPACE/android/kernel/common"
           KERNEL_DIR="$GITHUB_WORKSPACE/android/kernel/common/7c6bbcca33e1"
 
-          if [ ! -d "$KERNEL_DIR/.git" ]; then
-            git clone https://android.googlesource.com/kernel/common \
-              "$KERNEL_DIR"
-          fi
+          rm -rf "$KERNEL_DIR"
+
+          git clone https://android.googlesource.com/kernel/common \
+            "$KERNEL_DIR"
 
           cd "$KERNEL_DIR"
-          git fetch origin 7c6bbcca33e1
-          git checkout 7c6bbcca33e1
+
+          git fetch origin \
+            refs/heads/android12-5.10:refs/remotes/origin/android12-5.10
+
+          git checkout --detach 7c6bbcca33e1
+
+          echo "Kernel commit:"
+          git rev-parse --short HEAD
 
       - name: Import MediaTek Headers from emerald_r-u-oss
         run: |
